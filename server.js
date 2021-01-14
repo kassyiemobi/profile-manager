@@ -28,14 +28,4 @@ app.listen(3030, () => {
   console.log("server is running");
 });
 
-
-function validateUser(user) {
-  const usersSchema = Joi.object({
-    fullName: Joi.string().min(5).max(15).required(),
-    phoneNumber: Joi.string().min(3).max(15).required(),
-    email: Joi.string().min(5).max(45).required(),
-    password: Joi.string().min(2).max(55).required(),
-  });
-  return usersSchema.validate(user, schema)
-}
 module.exports = app
