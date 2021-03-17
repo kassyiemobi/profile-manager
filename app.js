@@ -6,7 +6,7 @@ const userRouter = require("./routes/userRoute");
 
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
-app.use("/users", userRouter);
+app.use("api/v1/users", userRouter);
 
 
 module.exports = app;

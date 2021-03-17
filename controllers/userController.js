@@ -1,6 +1,8 @@
 const multer = require ('multer')
 const helpers = require('../helpers');
 const User = require("../models/userModel.js");
+const AppError = require('./../utils/AppError')
+const catchAsynch = require("./../utils/catchAsync")
 
 // function validateUser(user) {
 //   const usersSchema = Joi.object({
@@ -12,7 +14,7 @@ const User = require("../models/userModel.js");
 //   return usersSchema.validate(user, schema)
 // }
 
-exports.creatUser = async (req, res,next) => {
+exports.createUser = catchAsynch (async (req, res,next) => {
   const newUser = await new User.create(req.body)
     res.status(200).json({
       status:'success',
@@ -20,50 +22,35 @@ exports.creatUser = async (req, res,next) => {
         newUser
     }
   });
-  };
+  });
 
- 
 
-exports.postProfilePic = (req, res) => {
-    // 'profile_pic' is the name of our file input field in the HTML form
-    let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).single('profile_pic');
-  
-    upload(req, res, function(err) {
-        // req.file contains information of uploaded file
-        // req.body contains information of text fields, if there were any
-  
-        if (req.fileValidationError) {
-            return res.send(req.fileValidationError);
-        }
-        else if (!req.file) {
-            return res.send('Please select an image to upload');
-        }
-        else if (err instanceof multer.MulterError) {
-            return res.send(err);
-        }
-        else if (err) {
-            return res.send(err);
-        }
-  
-        // Display uploaded image for user validation
-        res.send(`You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`);
-    });
-  } 
+exports.getAllUsers = catchAsynch (async (req, res, next ) => {
+  const users = await User.find();
 
-exports.getAllUsers =  async (req, res) => {
-    const users = await User.find({});
-    res.send(users);
+  res.status(200).json({
+    status:'success',
+    result:users.lenght,
+    data :{
+      users,
+     }
+  });
+});
+
+exports.getUser =  catchAsynch (async (req, res, next) => {
+  const user = await User.findbyId(req.params.id);
+  if (!user){
+    return new AppError('user not found',400)
   }
-
-exports.getUser =  async (req, res) => {
-    const user = await User.find({ _id: req.params.id });
-    if (!user) {
-      res.status(404).send("user not found");
+  res.status(200).json({
+    status:'success',
+    data:{
+       user,
     }
-    res.send(user);
-  }
+  });
+  });
 
-exports.updateUser =  async (req, res) => {
+exports.updateUser = catchAsynch (async (req, res) => {
     //find user
     const user = await User.find({ _id: req.params.id });
     if (!user) {
@@ -85,9 +72,9 @@ exports.updateUser =  async (req, res) => {
     user.password= req.body.password,
     
     res.send(user);
-  }
+  });
 
-exports.deleteUser =  async (req, res) => {
+exports.deleteUser =  catchAsynch (async (req, res) => {
     //check user and delete user
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
@@ -96,5 +83,5 @@ exports.deleteUser =  async (req, res) => {
     res.send(
       {user,
       message: 'successfully deleted'});
-  }
+  });
 
