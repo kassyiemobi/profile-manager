@@ -1,7 +1,6 @@
 const express = require ("express")
-const app = require("../server")
+const app = require('./../app')
 const router = express.Router()
-const { getUser, postUser, getAllUsers, updateUser, deleteUser, postProfilePic } = require("../controllers/userController");
 
   
 //router.route("/upload-profile-pic").post(postProfilePic );

@@ -1,16 +1,11 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const Joi = require("Joi");
-const { schema } = require("./models/users.js");
-const userRouter = require("./routes/userRoute")
+
+const mongoose = require("mongoose")
+
 
 //build the server
-const app = express();
+const app = require('./app');
 //const router = express.Router()
 
-app.use(express.json());
-app.use(express.static(__dirname + '/public'))
-app.use('/users', userRouter)
 
 //initialize server
 app.listen(3030, () => {
@@ -27,5 +22,3 @@ app.listen(3030, () => {
     .catch((err) => console.error("could not connect to MongoDB..."));
   console.log("server is running");
 });
-
-module.exports = app

@@ -1,36 +1,26 @@
 const multer = require ('multer')
 const helpers = require('../helpers');
-const User = require("../models/users.js");
+const User = require("../models/userModel.js");
 
-function validateUser(user) {
-  const usersSchema = Joi.object({
-    fullName: Joi.string().min(5).max(15).required(),
-    phoneNumber: Joi.string().min(3).max(15).required(),
-    email: Joi.string().min(5).max(45).required(),
-    password: Joi.string().min(2).max(55).required(),
-  });
-  return usersSchema.validate(user, schema)
-}
+// function validateUser(user) {
+//   const usersSchema = Joi.object({
+//     fullName: Joi.string().min(5).max(15).required(),
+//     phoneNumber: Joi.string().min(3).max(15).required(),
+//     email: Joi.string().min(5).max(45).required(),
+//     password: Joi.string().min(2).max(55).required(),
+//   });
+//   return usersSchema.validate(user, schema)
+// }
 
-exports.postUser = async (req, res) => {
-    const validation=validateUser(req.body)
-    if (validation.error) {
-      //400 bad request
-      res.status(400).send(validation.error.details[0].message);
-      return;
+exports.creatUser = async (req, res,next) => {
+  const newUser = await new User.create(req.body)
+    res.status(200).json({
+      status:'success',
+      data :{
+        newUser
     }
-    const user = new User({
-      fullName: req.body.fullName,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      password: req.body.password,
-    });
-  
-    //whenever you use await, your code must be inside an asynch function
-    const result = await user.save();
-    console.log(result);
-    res.send(result);
-  }
+  });
+  };
 
  
 
